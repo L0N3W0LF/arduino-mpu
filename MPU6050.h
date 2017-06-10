@@ -3,9 +3,9 @@
 
 struct Vector
 {
-    int x;
-    int y;
-    int z;
+    float x;
+    float y;
+    float z;
 };
 
 class MPU6050
@@ -18,7 +18,12 @@ public:
 
     Vector Acceleration();
     Vector Gyroscope();
-    double Temperature();
+    float Temperature();
+
+private:
+    Vector AccelerationRaw();
+    Vector GyroscopeRaw();
+    float TemperatureRaw();
 };
 
 #endif

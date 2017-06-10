@@ -29,6 +29,12 @@ const int GYRO_OUT_SIZE = 6;
 // Register 107 - Power Management 1 (Read/Write)
 const int PWR_MGMT_1 = 0x6B;
 
+// Accelerometer Sensitivity in LSB/g-force
+const float ACCEL_SENSITIVITY = 16384.0;
+
+// Gyroscope Sensitivity in LSB/°/s
+const float GYRO_SENSITIVITY = 16.4;
+
 // Temperature formula from data sheet ((TEMP / DIV) + ADD)
 const double TEMP_FORMULA_DIV = 340.0;
 const double TEMP_FORMULA_ADD = 36.53;
@@ -47,6 +53,35 @@ void MPU6050::WakeUp()
 }
 
 Vector MPU6050::Acceleration()
+{
+    Vector accelRaw = AccelerationRaw();
+
+    Vector accel;
+    accel.x = accelRaw.x / ACCEL_SENSITIVITY;
+    accel.y = accelRaw.y / ACCEL_SENSITIVITY;
+    accel.z = accelRaw.z / ACCEL_SENSITIVITY;
+
+    return accel;
+}
+
+Vector MPU6050::Gyroscope()
+{
+    Vector gyroRaw = GyroscopeRaw();
+
+    Vector gyro;
+    gyro.x = gyroRaw.x / GYRO_SENSITIVITY;
+    gyro.y = gyroRaw.y / GYRO_SENSITIVITY;
+    gyro.z = gyroRaw.z / GYRO_SENSITIVITY;
+
+    return gyro;
+}
+
+float MPU6050::Temperature()
+{
+    return (TemperatureRaw() / TEMP_FORMULA_DIV) + TEMP_FORMULA_ADD;
+}
+
+Vector MPU6050::AccelerationRaw()
 {
     Wire.beginTransmission(I2C_ADDRESS);
     Wire.write(ACCEL_XOUT_H);
@@ -67,7 +102,7 @@ Vector MPU6050::Acceleration()
     return accelRaw;
 }
 
-Vector MPU6050::Gyroscope()
+Vector MPU6050::GyroscopeRaw()
 {
     Wire.beginTransmission(I2C_ADDRESS);
     Wire.write(GYRO_XOUT_H);
@@ -88,7 +123,7 @@ Vector MPU6050::Gyroscope()
     return gyroRaw;
 }
 
-double MPU6050::Temperature()
+float MPU6050::TemperatureRaw()
 {
     Wire.beginTransmission(I2C_ADDRESS);
     Wire.write(TEMP_OUT_H);
@@ -99,5 +134,5 @@ double MPU6050::Temperature()
     const int tempL = Wire.read();
 
     const int tempRaw = (tempH << 8) | tempL;
-    return (tempRaw / TEMP_FORMULA_DIV) + TEMP_FORMULA_ADD;
+    return tempRaw;
 }
