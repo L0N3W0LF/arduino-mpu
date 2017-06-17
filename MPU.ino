@@ -15,21 +15,21 @@ void loop()
 {
     const auto accel = mpu.Acceleration();
     const auto gyro = mpu.Gyroscope();
-    const double temp = mpu.Temperature();
+    const float temp = mpu.Temperature();
 
-    Serial.print("AccelX = ");
+    // Print in CSV format.
     Serial.print(accel.x);
-    Serial.print(" | AccelY = ");
+    Serial.print(",");
     Serial.print(accel.y);
-    Serial.print(" | AccelZ = ");
+    Serial.print(",");
     Serial.print(accel.z);
-    Serial.print(" | GyroX = ");
+    Serial.print(",");
     Serial.print(gyro.x);
-    Serial.print(" | GyroY = ");
+    Serial.print(",");
     Serial.print(gyro.y);
-    Serial.print(" | GyroZ = ");
+    Serial.print(",");
     Serial.print(gyro.z);
-    Serial.print(" | Temp = ");
+    Serial.print(",");
     Serial.print(temp);
     Serial.println();
 
